@@ -1,0 +1,22 @@
+{
+  "name": "sweptjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MilanAnilAnthore/SweptJS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/MilanAnilAnthore/SweptJS/issues"
+  },
+  "homepage": "https://github.com/MilanAnilAnthore/SweptJS#readme"
+}
