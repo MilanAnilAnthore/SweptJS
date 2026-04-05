@@ -31,6 +31,7 @@ const pollDataEveryTwoSeconds = (collector: MemoryCollector) => {
         // Wait 2 seconds before firing the next poll
         setTimeout(poll, 2000);
     };
+    poll();
 }
 
 // This function runs the legacy api and return the data
