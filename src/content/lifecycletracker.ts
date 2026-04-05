@@ -22,4 +22,10 @@ const observer = new MutationObserver((mutations) => {
     }
 });
 const config = { childList: true, subtree: true };
-observer.observe(document.body, config)
+
+export function getStats() {
+    return { detached, collected, alive }
+}
+export function startTracking() {
+    observer.observe(document.body, config)
+}

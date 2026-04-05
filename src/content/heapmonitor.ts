@@ -12,7 +12,7 @@ interface legacyMemoryInfo extends modernMemoryInfo {
 }
 
 // This is where data is being stored from api
-const dataArr: (modernMemoryInfo | legacyMemoryInfo)[] = [];
+export const dataArr: (modernMemoryInfo | legacyMemoryInfo)[] = [];
 
 // defining the type for parameter of pollDataEveryTwoSeconds();
 type MemoryCollector = () => legacyMemoryInfo | undefined | Promise<modernMemoryInfo | undefined>;
@@ -69,11 +69,12 @@ async function modernCollect(): Promise<modernMemoryInfo | undefined> {
     Check if the crossOriginIsolated is false and runs legacyCollect
     If true runs modernCollect
 */
-if (!window.crossOriginIsolated) {
-    pollDataEveryTwoSeconds(legacyCollect);
-} else {
-    pollDataEveryTwoSeconds(modernCollect)
+export function startMonitoring() {
+    if (!window.crossOriginIsolated) {
+        pollDataEveryTwoSeconds(legacyCollect);
+    } else {
+        pollDataEveryTwoSeconds(modernCollect)
+    }
 }
-
 
 
