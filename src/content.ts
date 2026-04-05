@@ -15,20 +15,22 @@ interface legacyMemoryInfo extends modernMemoryInfo {
 const dataArr: (modernMemoryInfo | legacyMemoryInfo)[] = [];
 
 // defining the type for parameter of pollDataEveryTwoSeconds();
-type MemoryCollector = () => legacyMemoryInfo | modernMemoryInfo | undefined;
+type MemoryCollector = () => legacyMemoryInfo | undefined | Promise<modernMemoryInfo | undefined>;
 
 // This function takes a api as parameter and runs it every 2 seconds
 const pollDataEveryTwoSeconds = (collector: MemoryCollector) => {
 
-    setInterval(() => {
-        const data = collector();
+    const poll = async () => {
+        const data = await collector();
         if (data) {
-            if (dataArr.length >= 100) {
+            dataArr.push(data);
+            if (dataArr.length > 100) {
                 dataArr.shift();
             }
-            dataArr.push(data)
         }
-    }, 2000);
+        // Wait 2 seconds before firing the next poll
+        setTimeout(poll, 2000);
+    };
 }
 
 // This function runs the legacy api and return the data
@@ -38,17 +40,34 @@ function legacyCollect(): legacyMemoryInfo | undefined {
         console.log("Performance memory is not available in this browser")
         return undefined
     }
-    let data = {
+    return {
         usedJSHeapSize: performance.memory.usedJSHeapSize,
         totalJSHeapSize: performance.memory.totalJSHeapSize,
         jsHeapSizeLimit: performance.memory.jsHeapSizeLimit,
     }
-    return data
+}
+// This function runs the modern api and return the data
+async function modernCollect(): Promise<modernMemoryInfo | undefined> {
+    if (!performance.measureUserAgentSpecificMemory) {
+        console.log("measureUserAgentSpecificMemory is not available in this browser")
+        return undefined
+    }
+    let data = await performance.measureUserAgentSpecificMemory();
+
+    return {
+        usedJSHeapSize: data.bytes
+    };
 }
 
-
+/*
+    Check if the crossOriginIsolated is false and runs legacyCollect
+    If true runs modernCollect
+*/
 if (!window.crossOriginIsolated) {
-
+    pollDataEveryTwoSeconds(legacyCollect);
+} else {
+    pollDataEveryTwoSeconds(modernCollect)
 }
+
 
 
