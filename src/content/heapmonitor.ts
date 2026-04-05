@@ -34,6 +34,11 @@ const pollDataEveryTwoSeconds = (collector: MemoryCollector) => {
     poll();
 }
 
+function bytesToMB(bytes: number): number {
+    return bytes / (1024 ** 2);
+}
+
+
 // This function runs the legacy api and return the data
 function legacyCollect(): legacyMemoryInfo | undefined {
 
@@ -42,9 +47,9 @@ function legacyCollect(): legacyMemoryInfo | undefined {
         return undefined
     }
     return {
-        usedJSHeapSize: performance.memory.usedJSHeapSize,
-        totalJSHeapSize: performance.memory.totalJSHeapSize,
-        jsHeapSizeLimit: performance.memory.jsHeapSizeLimit,
+        usedJSHeapSize: bytesToMB(performance.memory.usedJSHeapSize),
+        totalJSHeapSize: bytesToMB(performance.memory.totalJSHeapSize),
+        jsHeapSizeLimit: bytesToMB(performance.memory.jsHeapSizeLimit),
     }
 }
 // This function runs the modern api and return the data
@@ -56,7 +61,7 @@ async function modernCollect(): Promise<modernMemoryInfo | undefined> {
     let data = await performance.measureUserAgentSpecificMemory();
 
     return {
-        usedJSHeapSize: data.bytes
+        usedJSHeapSize: bytesToMB(data.bytes)
     };
 }
 
