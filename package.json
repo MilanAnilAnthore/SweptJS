@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc --watch"
+    "typecheck": "npx tsc --noEmit --watch",
+    "build": "npx tsc --noEmit && esbuild src/background.ts src/content/content.ts src/popup.ts --bundle --outdir=dist --outbase=src",
+    "watch": "esbuild src/background.ts src/content/content.ts src/popup.ts --bundle --outdir=dist --outbase=src --watch"
   },
   "repository": {
     "type": "git",
@@ -18,5 +19,10 @@
   "bugs": {
     "url": "https://github.com/MilanAnilAnthore/SweptJS/issues"
   },
-  "homepage": "https://github.com/MilanAnilAnthore/SweptJS#readme"
+  "homepage": "https://github.com/MilanAnilAnthore/SweptJS#readme",
+  "devDependencies": {
+    "@types/chrome": "^0.1.39",
+    "esbuild": "^0.28.0",
+    "typescript": "^6.0.2"
+  }
 }

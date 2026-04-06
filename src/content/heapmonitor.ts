@@ -76,5 +76,3 @@ export function startMonitoring() {
         pollDataEveryTwoSeconds(modernCollect)
     }
 }
-
-
