@@ -24,7 +24,7 @@ const pollDataEveryTwoSeconds = (collector: MemoryCollector) => {
         const data = await collector();
         if (data) {
             dataArr.push(data);
-            if (dataArr.length > 100) {
+            if (dataArr.length > 50) {
                 dataArr.shift();
             }
         }

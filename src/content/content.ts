@@ -20,6 +20,7 @@ setInterval(() => {
             lifecycle: lifeCycleStats
         }, () => {
             if (chrome.runtime.lastError) {
+                console.log("runtime error:", chrome.runtime.lastError)
             }
         });
     } catch (e) {
