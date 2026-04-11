@@ -15,7 +15,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         handleAnalysis().then((result) => {
             sendResponse(result)
         }).catch((err) => {
-            sendResponse({ statusCode: 500, message: "Internal error" });
+            sendResponse({ statusCode: 500, message: "Internal error", err });
         })
         return true
     }
