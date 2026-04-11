@@ -1,7 +1,9 @@
 import { dataArr, startMonitoring } from "./heapmonitor"
 import { getStats, startTracking } from "./lifecycletracker"
 
+// starts heapMonitoring
 startMonitoring();
+// starts tracking of nodes
 startTracking();
 
 let lastSentHeap: typeof dataArr[0] | null = null;
