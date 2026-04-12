@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', async function () {
 
     const analyzedData = await analysis();
+    console.log(analyzedData)
 });
 
 const MAX_ATTEMPT = 20;
