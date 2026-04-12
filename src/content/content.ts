@@ -22,12 +22,10 @@ setInterval(() => {
             lifecycle: lifeCycleStats
         }, () => {
             if (chrome.runtime.lastError) {
-                console.log("runtime error:", chrome.runtime.lastError)
+                // console.log("runtime error:", chrome.runtime.lastError)
             }
         });
-    } catch (e) {
-        console.warn("SweptJS: Connection to background script lost.");
-    }
+    } catch (e) { }
 
 
     lastSentHeap = latestHeap;
