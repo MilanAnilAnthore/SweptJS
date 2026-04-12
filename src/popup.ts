@@ -12,12 +12,7 @@ async function analysis(): Promise<unknown> {
         let response = await chrome.runtime.sendMessage({ type: "GET_ANALYSIS" });
 
         if (response.statusCode === 404 || response.statusCode === 500) return response.message;
-        if (response.statusCode !== 202) {
-            setTimeout(async () => {
-                response = await chrome.runtime.sendMessage({ type: "GET_ANALYSIS" });
-                return response
-            }, 4000)
-        }
+        if (response.statusCode !== 202) return response
         console.log(response.message);
         await new Promise((resolve) => setTimeout(resolve, INTERVAL));
     }
