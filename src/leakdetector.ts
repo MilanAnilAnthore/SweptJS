@@ -1,4 +1,4 @@
-import type MessageType from './types'
+import type { MessageType } from './types'
 const HEAP_GROWTH_THRESHOLD = 0.20; // 20%
 const ALIVE_GROWTH_THRESHOLD = 10;
 
@@ -27,7 +27,11 @@ function analyzeHeapTrend(samples: MessageType[]) {
     return { growthPercentage: growth, heapthresholdExceeded: isLeaking }
 }
 
+// Implement a dynamic value using second 3 final values of the array, so that you dont need to store a prev value in chrome local
+// Dont forget its a big bug machu, huhuhu, myr
 let prevAliveAvg = 0
+
+
 function analyzeDOMTrend(samples: MessageType[]) {
     const firstFive: Array<number> = samples.slice(0, 5).map((e) => e.lifecycle.alive);
     const oldestAliveAvg = getAverage(firstFive);
