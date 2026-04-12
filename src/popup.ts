@@ -8,7 +8,13 @@ document.addEventListener('DOMContentLoaded', async function () {
     if ('statusCode' in analyzedData) {
         console.log("This is an error", analyzedData.message)
     } else {
-
+        console.log("Initial poll finished")
+        async function continuousPoll() {
+            let response = await pollingAnalysis();
+            console.log("This is continuous poll", response)
+            setTimeout(continuousPoll, 4000)
+        }
+        continuousPoll();
     }
 });
 
