@@ -1,5 +1,7 @@
 import type { MessageType } from './types'
 import { detectLeak } from './leakdetector';
+import type { ChromeError } from './types';
+import type { AnalyzedMessage } from './types';
 
 const storage = "dataSample";
 
@@ -48,7 +50,7 @@ async function handleMemoryUpdate(message: MessageType, tabId: number) {
     }
 }
 
-async function handleAnalysis(tabId: number) {
+async function handleAnalysis(tabId: number): Promise<AnalyzedMessage | ChromeError> {
     const result: { [key: string]: MessageType[] } = await chrome.storage.local.get(`${storage}_${tabId}`);
     const storageData = result[`${storage}_${tabId}`]
 

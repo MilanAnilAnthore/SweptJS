@@ -14,7 +14,7 @@ export interface MessageType {
 }
 
 // This is the type of message we get returned from leakdetector
-export interface analyzedMessage {
+export interface AnalyzedMessage {
     analyzedHeap: {
         growthPercentage: number,
         heapthresholdExceeded: boolean
@@ -26,7 +26,7 @@ export interface analyzedMessage {
 }
 
 // This is for chrome errors
-export interface chromeError {
+export interface ChromeError {
     statusCode: number,
     message: string
 }
