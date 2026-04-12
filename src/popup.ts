@@ -12,7 +12,10 @@ const INTERVAL = 4000;
 
 async function analysis(): Promise<AnalyzedMessage | ChromeError> {
     for (let attempt = 0; attempt < MAX_ATTEMPT; attempt++) {
-        let response = await chrome.runtime.sendMessage({ type: "GET_ANALYSIS" });
+        let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (!tab?.id) return { statusCode: 404, message: "Tab ID error" }
+
+        let response = await chrome.runtime.sendMessage({ type: "GET_ANALYSIS", tabId: tab.id });
 
         if (response.statusCode === 404 || response.statusCode === 500) return response;
         if (response.statusCode !== 202) return response

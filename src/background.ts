@@ -16,27 +16,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
     } else if (message.type === "GET_ANALYSIS") {
         console.log("Getting analysis")
-        getCurrentTab().then((tabId) => {
-            if (!tabId) {
-                sendResponse({ statusCode: 404, message: "Tab ID error" })
-                return
-            }
-            handleAnalysis(tabId).then((result) => {
-                sendResponse(result)
-            }).catch((err) => {
-                sendResponse({ statusCode: 500, message: "Internal error", err });
-            })
+        const tabId = message.tabId
+        handleAnalysis(tabId).then((result) => {
+            sendResponse(result)
+        }).catch((err) => {
+            sendResponse({ statusCode: 500, message: "Internal error", err });
         })
         return true
     }
 })
 
-async function getCurrentTab(): Promise<number | undefined> {
-    let queryOptions = { active: true, currentWindow: true };
-    let [tab] = await chrome.tabs.query(queryOptions);
-    if (tab)
-        return tab.id;
-}
 
 async function handleMemoryUpdate(message: MessageType, tabId: number) {
     try {
