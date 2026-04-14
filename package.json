@@ -2,11 +2,10 @@
   "name": "sweptjs",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "typecheck": "npx tsc --noEmit --watch",
-    "build": "npx tsc --noEmit && esbuild src/background.ts src/content/content.ts src/popup.ts --bundle --outdir=dist --outbase=src",
-    "watch": "esbuild src/background.ts src/content/content.ts src/popup.ts --bundle --outdir=dist --outbase=src --watch"
+    "dev": "vite build --watch --mode development",
+    "build": "vite build",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "repository": {
     "type": "git",
@@ -15,14 +14,18 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/MilanAnilAnthore/SweptJS/issues"
   },
   "homepage": "https://github.com/MilanAnilAnthore/SweptJS#readme",
   "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
     "@types/chrome": "^0.1.39",
-    "esbuild": "^0.28.0",
-    "typescript": "^6.0.2"
+    "svelte": "^5.55.3",
+    "svelte-check": "^4.4.6",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.8",
+    "vite-plugin-web-extension": "^4.5.1"
   }
 }

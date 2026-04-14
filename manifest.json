@@ -7,7 +7,7 @@
         "storage"
     ],
     "background": {
-        "service_worker": "dist/background.js"
+        "service_worker": "src/background.ts"
     },
     "content_scripts": [
         {
@@ -15,13 +15,17 @@
                 "<all_urls>"
             ],
             "js": [
-                "dist/content/content.js"
+                "src/content/content.ts"
             ],
             "all_frames": false
         }
     ],
     "action": {
-        "default_popup": "popup.html",
-        "default_icon": "resources/logo.png"
+        "default_popup": "src/popup/popup.html",
+        "default_icon": {
+            "16": "resources/logo.png",
+            "48": "resources/logo.png",
+            "128": "resources/logo.png"
+        }
     }
 }
