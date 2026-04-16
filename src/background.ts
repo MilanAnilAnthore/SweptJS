@@ -4,6 +4,7 @@ import type { ChromeError } from './types';
 import type { AnalyzedMessage } from './types';
 
 const storage = "dataSample";
+chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "MEMORY_UPDATE") {
@@ -50,7 +51,10 @@ async function handleAnalysis(tabId: number): Promise<AnalyzedMessage | ChromeEr
                 message: "Collecting Data"
             }
         }
-        return detectLeak(storageData)
+        return {
+            ...detectLeak(storageData),
+            samples: storageData.map(s => s.heap.usedJSHeapSize)
+        }
     }
     return {
         statusCode: 404,

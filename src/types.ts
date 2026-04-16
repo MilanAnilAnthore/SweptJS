@@ -22,7 +22,8 @@ export interface AnalyzedMessage {
     analyzedDom: {
         currentAlive: number,
         domthresholdExceeded: boolean
-    }
+    },
+    samples: number[]
 }
 
 // This is for chrome errors

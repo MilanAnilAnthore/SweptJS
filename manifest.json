@@ -4,8 +4,12 @@
     "version": "1.0.0",
     "description": "Memory & DOM lifecycle monitor for web pages",
     "permissions": [
-        "storage"
+        "storage",
+        "sidePanel"
     ],
+    "side_panel": {
+        "default_path": "src/popup/popup.html"
+    },
     "background": {
         "service_worker": "src/background.ts"
     },
@@ -21,7 +25,6 @@
         }
     ],
     "action": {
-        "default_popup": "src/popup/popup.html",
         "default_icon": {
             "16": "resources/logo.png",
             "48": "resources/logo.png",
