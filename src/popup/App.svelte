@@ -1,4 +1,23 @@
 <script lang="ts">
+
+import { onMount } from 'svelte';
+
+onMount(() => {
+    init();
+});
+
+  async function init() {
+    const analyzedData = await analysis();
+
+    if ('statusCode' in analyzedData) {
+      console.log("This is an error", analyzedData.message);
+    } else {
+      console.log("Initial poll finished");
+      console.log(analyzedData);
+      continuousPoll();
+    }
+  }
+
   import type { AnalyzedMessage, ChromeError } from '../types';
 
   const MAX_ATTEMPT = 20;
@@ -34,17 +53,5 @@
   }
 
 
-  async function init() {
-    const analyzedData = await analysis();
 
-    if ('statusCode' in analyzedData) {
-      console.log("This is an error", analyzedData.message);
-    } else {
-      console.log("Initial poll finished");
-      console.log(analyzedData);
-      continuousPoll();
-    }
-  }
-
-  init();
 </script>
