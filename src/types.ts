@@ -5,6 +5,7 @@ export interface MessageType {
         usedJSHeapSize: number;
         totalJSHeapSize?: number;
         jsHeapSizeLimit?: number;
+        currentTime: string
     },
     lifecycle: {
         detached: number,
@@ -23,7 +24,10 @@ export interface AnalyzedMessage {
         currentAlive: number,
         domthresholdExceeded: boolean
     },
-    samples: number[]
+    samples: {
+        arrayHeap: number[],
+        arrayTime: string[]
+    }
 }
 
 // This is for chrome errors

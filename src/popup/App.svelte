@@ -55,3 +55,7 @@ onMount(() => {
 
 
 </script>
+
+<div style="width: 800px;">
+  <canvas id="acquisitions"></canvas>
+</div>

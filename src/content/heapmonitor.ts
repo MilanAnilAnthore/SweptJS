@@ -1,6 +1,7 @@
 // This is the structure of data we get from modernMemory API
 interface modernMemoryInfo {
     usedJSHeapSize: number;
+    currentTime: string;
 }
 
 /* This is the structure of data we get from legacyMemory API
@@ -38,6 +39,16 @@ function bytesToMB(bytes: number): number {
     return bytes / (1024 ** 2);
 }
 
+function getCurrentTime(): string {
+    const timeMarker = new Date().toLocaleTimeString([], {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+    return timeMarker
+}
+
 
 // This function runs the legacy api and return the data
 function legacyCollect(): legacyMemoryInfo | undefined {
@@ -50,6 +61,7 @@ function legacyCollect(): legacyMemoryInfo | undefined {
         usedJSHeapSize: bytesToMB(performance.memory.usedJSHeapSize),
         totalJSHeapSize: bytesToMB(performance.memory.totalJSHeapSize),
         jsHeapSizeLimit: bytesToMB(performance.memory.jsHeapSizeLimit),
+        currentTime: getCurrentTime()
     }
 }
 // This function runs the modern api and return the data
@@ -61,7 +73,8 @@ async function modernCollect(): Promise<modernMemoryInfo | undefined> {
     let data = await performance.measureUserAgentSpecificMemory();
 
     return {
-        usedJSHeapSize: bytesToMB(data.bytes)
+        usedJSHeapSize: bytesToMB(data.bytes),
+        currentTime: getCurrentTime()
     };
 }
 

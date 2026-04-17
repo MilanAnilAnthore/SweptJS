@@ -27,5 +27,8 @@
     "typescript": "^6.0.2",
     "vite": "^8.0.8",
     "vite-plugin-web-extension": "^4.5.1"
+  },
+  "dependencies": {
+    "chart.js": "^4.5.1"
   }
 }

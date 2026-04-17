@@ -53,7 +53,10 @@ async function handleAnalysis(tabId: number): Promise<AnalyzedMessage | ChromeEr
         }
         return {
             ...detectLeak(storageData),
-            samples: storageData.map(s => s.heap.usedJSHeapSize)
+            samples: {
+                arrayHeap: storageData.map(s => s.heap.usedJSHeapSize),
+                arrayTime: storageData.map(s => s.heap.currentTime)
+            }
         }
     }
     return {
