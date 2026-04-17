@@ -1,29 +1,28 @@
 <script lang="ts">
 
 import { onMount } from 'svelte';
+import type { AnalyzedMessage, ChromeError } from '../types';
+
+const MAX_ATTEMPT = 20;
+const INTERVAL = 4000;
 
 onMount(() => {
-    init();
+    finalAnalysisResult();
 });
 
-  async function init() {
-    const analyzedData = await analysis();
+  async function finalAnalysisResult() {
+    const analyzedData = await initialAnalysisPoll();
 
     if ('statusCode' in analyzedData) {
       console.log("This is an error", analyzedData.message);
     } else {
       console.log("Initial poll finished");
       console.log(analyzedData);
-      continuousPoll();
     }
+    continuousPoll();
   }
 
-  import type { AnalyzedMessage, ChromeError } from '../types';
-
-  const MAX_ATTEMPT = 20;
-  const INTERVAL = 4000;
-
-  async function pollingAnalysis(): Promise<AnalyzedMessage | ChromeError> {
+  async function getAnalysis(): Promise<AnalyzedMessage | ChromeError> {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab?.id) return { statusCode: 404, message: "Tab ID error" };
 
@@ -31,9 +30,9 @@ onMount(() => {
     return response;
   }
 
-  async function analysis(): Promise<AnalyzedMessage | ChromeError> {
+  async function initialAnalysisPoll(): Promise<AnalyzedMessage | ChromeError> {
     for (let attempt = 0; attempt < MAX_ATTEMPT; attempt++) {
-      let response = await pollingAnalysis();
+      let response = await getAnalysis();
 
       if ('statusCode' in response) {
         if (response.statusCode === 404 || response.statusCode === 500) return response;
@@ -47,14 +46,16 @@ onMount(() => {
   }
 
   async function continuousPoll() {
-    let response = await pollingAnalysis();
+    let response = await getAnalysis();
     console.log("This is continuous poll", response);
     setTimeout(continuousPoll, 4000);
   }
 
 
 
-</script>
+  </script>
+
+
 
 <div style="width: 800px;">
   <canvas id="acquisitions"></canvas>
