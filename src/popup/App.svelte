@@ -1,19 +1,18 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+  import type { AnalyzedMessage, ChromeError } from "../types";
 
-import { onMount } from 'svelte';
-import type { AnalyzedMessage, ChromeError } from '../types';
+  const MAX_ATTEMPT = 20;
+  const INTERVAL = 4000;
 
-const MAX_ATTEMPT = 20;
-const INTERVAL = 4000;
-
-onMount(() => {
+  onMount(() => {
     finalAnalysisResult();
-});
+  });
 
   async function finalAnalysisResult() {
     const analyzedData = await initialAnalysisPoll();
 
-    if ('statusCode' in analyzedData) {
+    if ("statusCode" in analyzedData) {
       console.log("This is an error", analyzedData.message);
     } else {
       console.log("Initial poll finished");
@@ -26,7 +25,10 @@ onMount(() => {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab?.id) return { statusCode: 404, message: "Tab ID error" };
 
-    let response = await chrome.runtime.sendMessage({ type: "GET_ANALYSIS", tabId: tab.id });
+    let response = await chrome.runtime.sendMessage({
+      type: "GET_ANALYSIS",
+      tabId: tab.id,
+    });
     return response;
   }
 
@@ -34,15 +36,19 @@ onMount(() => {
     for (let attempt = 0; attempt < MAX_ATTEMPT; attempt++) {
       let response = await getAnalysis();
 
-      if ('statusCode' in response) {
-        if (response.statusCode === 404 || response.statusCode === 500) return response;
+      if ("statusCode" in response) {
+        if (response.statusCode === 404 || response.statusCode === 500)
+          return response;
         if (response.statusCode === 202) console.log(response.message);
       } else {
         return response;
       }
       await new Promise((resolve) => setTimeout(resolve, INTERVAL));
     }
-    return { statusCode: 404, message: "EXCEEDED MAXIMUM FETCH TIME, REFRESH AGAIN" };
+    return {
+      statusCode: 404,
+      message: "EXCEEDED MAXIMUM FETCH TIME, REFRESH AGAIN",
+    };
   }
 
   async function continuousPoll() {
@@ -51,12 +57,7 @@ onMount(() => {
     setTimeout(continuousPoll, 4000);
   }
 
+  import HeapGraph from "./components/heapGraph.svelte";
+</script>
 
-
-  </script>
-
-
-
-<div style="width: 800px;">
-  <canvas id="acquisitions"></canvas>
-</div>
+<HeapGraph />
