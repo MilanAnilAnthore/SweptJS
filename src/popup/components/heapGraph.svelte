@@ -17,7 +17,11 @@
         LinearScale,
     );
 
-    let { heapSamples, timeSamples } = $props();
+    let {
+        heapSamples,
+        timeSamples,
+    }: { heapSamples: number[]; timeSamples: string[] } = $props();
+
     let chart: Chart;
 
     try {

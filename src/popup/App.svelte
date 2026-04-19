@@ -7,6 +7,8 @@
 
   let heapSamples = $state<number[]>([]);
   let timeSamples = $state<string[]>([]);
+  let heapthresholdExceeded = $state<boolean>(false);
+  let domthresholdExceeded = $state<boolean>(false);
 
   onMount(() => {
     finalAnalysisResult();
@@ -16,6 +18,11 @@
     if ("samples" in data) {
       heapSamples = data.samples.arrayHeap;
       timeSamples = data.samples.arrayTime;
+    }
+
+    if ("analyzedHeap" in data && "analyzedDom" in data) {
+      heapthresholdExceeded = data.analyzedHeap.heapthresholdExceeded;
+      domthresholdExceeded = data.analyzedDom.domthresholdExceeded;
     }
   }
 
@@ -70,6 +77,8 @@
   }
 
   import HeapGraph from "./components/heapGraph.svelte";
+  import MemoryStatus from "./components/MemoryStatus.svelte";
 </script>
 
+<MemoryStatus {heapthresholdExceeded} {domthresholdExceeded} />
 <HeapGraph {heapSamples} {timeSamples} />
