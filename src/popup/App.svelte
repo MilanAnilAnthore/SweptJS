@@ -80,6 +80,23 @@
     setTimeout(continuousPoll, INTERVAL);
   }
 
+  async function clearData() {
+    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.id) return { statusCode: 404, message: "Tab ID error" };
+
+    const key = `dataSample_${tab.id}`;
+    const result = await chrome.storage.local.get(key);
+
+    console.log(result);
+
+    if (result[key]) {
+      await chrome.storage.local.remove(key);
+      return { statusCode: 200, message: "Data successfully cleared" };
+    } else {
+      return { statusCode: 404, message: "Data not found" };
+    }
+  }
+
   import HeapGraph from "./components/heapGraph.svelte";
   import MemoryMetrics from "./components/MemoryMetrics.svelte";
   import MemoryStatus from "./components/MemoryStatus.svelte";
@@ -88,10 +105,18 @@
 <main class="cyber-container">
   <header style="margin-bottom: 24px;">
     <h1 class="cyber-h1 cyber-glitch" data-text="SWEPT.JS">SWEPT.JS</h1>
-    <div style="font-size: 0.8rem; color: var(--muted-fg); margin-top: -16px; margin-bottom: 16px;">SYS_DIAGNOSTICS >_</div>
+    <div
+      style="font-size: 0.8rem; color: var(--muted-fg); margin-top: -16px; margin-bottom: 16px;"
+    >
+      SYS_DIAGNOSTICS >_
+    </div>
   </header>
 
   <MemoryStatus {heapthresholdExceeded} {domthresholdExceeded} />
   <MemoryMetrics {growthPercentage} {currentAlive} {heapthresholdExceeded} />
   <HeapGraph {heapSamples} {timeSamples} />
+
+  <button class="cyber-button destructive" onclick={clearData}
+    >Clear Data</button
+  >
 </main>
