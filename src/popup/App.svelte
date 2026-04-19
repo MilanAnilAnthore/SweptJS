@@ -129,10 +129,10 @@
       const key = `dataSample_${tab.id}`;
       const result = await chrome.storage.local.get(key);
 
-      console.log(result);
-
       if (result[key]) {
         await chrome.storage.local.remove(key);
+        heapSamples = [];
+        timeSamples = [];
         currentError = {
           statusCode: 200,
           message: "Data successfully cleared",

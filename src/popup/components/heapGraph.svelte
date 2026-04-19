@@ -101,6 +101,7 @@
             chart.update();
         }
     });
+
 </script>
 
 <div
