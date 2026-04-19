@@ -85,6 +85,13 @@
   import MemoryStatus from "./components/MemoryStatus.svelte";
 </script>
 
-<MemoryStatus {heapthresholdExceeded} {domthresholdExceeded} />
-<MemoryMetrics {growthPercentage} {currentAlive} />
-<HeapGraph {heapSamples} {timeSamples} />
+<main class="cyber-container">
+  <header style="margin-bottom: 24px;">
+    <h1 class="cyber-h1 cyber-glitch" data-text="SWEPT.JS">SWEPT.JS</h1>
+    <div style="font-size: 0.8rem; color: var(--muted-fg); margin-top: -16px; margin-bottom: 16px;">SYS_DIAGNOSTICS >_</div>
+  </header>
+
+  <MemoryStatus {heapthresholdExceeded} {domthresholdExceeded} />
+  <MemoryMetrics {growthPercentage} {currentAlive} {heapthresholdExceeded} />
+  <HeapGraph {heapSamples} {timeSamples} />
+</main>

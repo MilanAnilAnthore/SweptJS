@@ -1,3 +1,148 @@
-body {
-    background-color: beige;
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #0a0a0f;
+  --fg: #e0e0e0;
+  --card: #12121a;
+  --muted: #1c1c2e;
+  --muted-fg: #6b7280;
+  --accent: #00ff88;
+  --accent-secondary: #ff00ff;
+  --accent-tertiary: #00d4ff;
+  --border-color: #2a2a3a;
+  --input: #12121a;
+  --destructive: #ff3366;
+
+  /* Optimized Glow effects - lightweight and direct */
+  --glow-accent: 0 0 5px var(--accent), 0 0 10px rgba(0, 255, 136, 0.4);
+  --glow-destructive: 0 0 5px var(--destructive), 0 0 10px rgba(255, 51, 102, 0.4);
 }
+
+body {
+  margin: 0;
+  /* Flexible height for side panel, vertical space use is good */
+  min-height: 100vh;
+  padding: 16px;
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Subtle performance-friendly scanline to save GPU */
+body::after {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.1) 2px,
+    rgba(0, 0, 0, 0.1) 4px
+  );
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Headings */
+h1, h2, h3, h4 {
+  font-family: 'Orbitron', monospace;
+  text-transform: uppercase;
+  margin-top: 0;
+}
+
+.cyber-h1 {
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  color: var(--fg);
+  text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+  margin-bottom: 24px;
+  display: inline-block;
+}
+
+/* Glitch Title Effect */
+.cyber-glitch {
+  position: relative;
+}
+.cyber-glitch::before, .cyber-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+.cyber-glitch::before {
+  color: var(--accent-secondary);
+  z-index: -1;
+  text-shadow: -2px 0 var(--accent-secondary);
+  /* Use a less intensive transform trick to save GPU */
+  clip-path: inset(10% 0 80% 0);
+}
+.cyber-glitch::after {
+  color: var(--accent-tertiary);
+  z-index: -2;
+  text-shadow: 2px 0 var(--accent-tertiary);
+  clip-path: inset(80% 0 10% 0);
+}
+
+/* Chamfered Containers */
+.cyber-card {
+  background: var(--card);
+  border: 1px solid var(--border-color);
+  padding: 16px;
+  margin-bottom: 16px;
+  /* Clean cut clip-path */
+  clip-path: polygon(
+    0 8px, 8px 0,
+    100% 0, 100% calc(100% - 8px),
+    calc(100% - 8px) 100%, 0 100%
+  );
+  position: relative;
+  transition: all 150ms ease;
+}
+
+/* Highlight border on hover, lightweight */
+.cyber-card:hover {
+  border-color: var(--accent);
+}
+
+.cyber-card.terminal {
+  background: var(--bg);
+}
+
+.terminal-header {
+  border-bottom: 1px solid var(--border-color);
+  margin: -16px -16px 16px -16px;
+  padding: 8px 16px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  background-color: var(--muted);
+}
+
+/* Terminal Traffic Lights */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  opacity: 0.6;
+}
+.dot.r { background: var(--destructive); }
+.dot.y { background: #ffcc00; }
+.dot.g { background: var(--accent); }
