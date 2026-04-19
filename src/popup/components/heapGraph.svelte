@@ -18,28 +18,43 @@
     );
 
     let { heapSamples, timeSamples } = $props();
+    let chart: Chart;
 
-    onMount(() => {
-        let chart = new Chart(
-            document.getElementById("acquisitions") as HTMLCanvasElement,
-            {
-                type: "line",
-                data: {
-                    labels: timeSamples,
-                    datasets: [
-                        {
-                            label: "Used JS Heap (MB)",
-                            data: heapSamples,
-                            borderColor: "rgb(75, 192, 192)",
-                            tension: 0.1,
-                        },
-                    ],
+    try {
+        onMount(() => {
+            chart = new Chart(
+                document.getElementById("acquisitions") as HTMLCanvasElement,
+                {
+                    type: "line",
+                    data: {
+                        labels: [],
+                        datasets: [
+                            {
+                                label: "Used JS Heap (MB)",
+                                data: [],
+                                borderColor: "rgb(75, 192, 192)",
+                                tension: 0.1,
+                            },
+                        ],
+                    },
                 },
-            },
-        );
+            );
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+    $effect(() => {
+        if (chart) {
+            chart.data.labels = $state.snapshot(timeSamples);
+            if (chart.data.datasets?.[0]) {
+                chart.data.datasets[0].data = $state.snapshot(heapSamples);
+            }
+            chart.update();
+        }
     });
 </script>
 
-<div style="width: 800px;">
+<div style="width: 600px;">
     <canvas id="acquisitions"></canvas>
 </div>

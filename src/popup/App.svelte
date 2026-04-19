@@ -66,7 +66,7 @@
     let response = await getAnalysis();
     console.log("This is continuous poll", response);
     updateSamples(response);
-    setTimeout(continuousPoll, 4000);
+    setTimeout(continuousPoll, INTERVAL);
   }
 
   import HeapGraph from "./components/heapGraph.svelte";
