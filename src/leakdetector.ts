@@ -27,17 +27,18 @@ function analyzeHeapTrend(samples: MessageType[]) {
     return { growthPercentage: growth, heapthresholdExceeded: isLeaking }
 }
 
-// Implement a dynamic value using second 3 final values of the array, so that you dont need to store a prev value in chrome local
-// Dont forget its a big bug machu, huhuhu, myr
-let prevAliveAvg = 0
-
-
+// Calculate prevAliveAvg dynamically from the previous window to avoid relying on state across restarts.
+// We use the 5 elements before the current last 5 elements to measure the trend reliably.
 function analyzeDOMTrend(samples: MessageType[]) {
     const firstFive: Array<number> = samples.slice(0, 5).map((e) => e.lifecycle.alive);
     const oldestAliveAvg = getAverage(firstFive);
 
     const lastFive: Array<number> = samples.slice(-5).map((e) => e.lifecycle.alive);
     const currentAliveAvg = getAverage(lastFive)
+
+    // Dynamically calculate the previous window's average 
+    const prevSamples: Array<number> = samples.slice(-10, -5).map((e) => e.lifecycle.alive);
+    const prevAliveAvg = prevSamples.length > 0 ? getAverage(prevSamples) : 0;
 
     const latestAlive: number = samples[samples.length - 1]?.lifecycle.alive ?? 0;
 
@@ -52,6 +53,6 @@ function analyzeDOMTrend(samples: MessageType[]) {
             }
         }
     }
-    prevAliveAvg = currentAliveAvg
+
     return { currentAlive: latestAlive, domthresholdExceeded: false }
 }
