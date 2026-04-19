@@ -9,6 +9,8 @@
   let timeSamples = $state<string[]>([]);
   let heapthresholdExceeded = $state<boolean>(false);
   let domthresholdExceeded = $state<boolean>(false);
+  let growthPercentage = $state<number>(0);
+  let currentAlive = $state<number>(0);
 
   onMount(() => {
     finalAnalysisResult();
@@ -23,6 +25,8 @@
     if ("analyzedHeap" in data && "analyzedDom" in data) {
       heapthresholdExceeded = data.analyzedHeap.heapthresholdExceeded;
       domthresholdExceeded = data.analyzedDom.domthresholdExceeded;
+      growthPercentage = data.analyzedHeap.growthPercentage;
+      currentAlive = data.analyzedDom.currentAlive;
     }
   }
 
@@ -77,8 +81,10 @@
   }
 
   import HeapGraph from "./components/heapGraph.svelte";
+  import MemoryMetrics from "./components/MemoryMetrics.svelte";
   import MemoryStatus from "./components/MemoryStatus.svelte";
 </script>
 
 <MemoryStatus {heapthresholdExceeded} {domthresholdExceeded} />
+<MemoryMetrics {growthPercentage} {currentAlive} />
 <HeapGraph {heapSamples} {timeSamples} />
