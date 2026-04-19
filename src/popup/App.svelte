@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { AnalyzedMessage, ChromeError, ErrorType } from "../types";
+  import { ErrorType, type AnalyzedMessage, type ChromeError } from "../types";
   import { customError } from "../utils/errorHandler";
 
   const MAX_ATTEMPT = 20;
@@ -36,6 +36,11 @@
     const analyzedData = await initialAnalysisPoll();
 
     if ("statusCode" in analyzedData) {
+      currentError = new customError(
+        analyzedData.errorType || ErrorType.UNKNOWN,
+        analyzedData.statusCode,
+        analyzedData.message,
+      );
     } else {
       updateSamples(analyzedData);
     }
@@ -44,7 +49,12 @@
 
   async function getAnalysis(): Promise<AnalyzedMessage | ChromeError> {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (!tab?.id) return { statusCode: 404, message: "Tab ID error" };
+    if (!tab?.id)
+      return {
+        errorType: ErrorType.TAB_ID,
+        statusCode: 404,
+        message: "Tab ID ERROR",
+      };
 
     let response = await chrome.runtime.sendMessage({
       type: "GET_ANALYSIS",
@@ -61,7 +71,11 @@
         if (response.statusCode === 404 || response.statusCode === 500)
           return response;
         if (response.statusCode === 202) {
-          console.log("///");
+          currentError = new customError(
+            response.errorType || ErrorType.UNKNOWN,
+            response.statusCode,
+            response.message,
+          );
         }
       } else {
         return response;
@@ -69,6 +83,7 @@
       await new Promise((resolve) => setTimeout(resolve, INTERVAL));
     }
     return {
+      errorType: ErrorType.TIMEOUT,
       statusCode: 404,
       message: "EXCEEDED MAXIMUM FETCH TIME, REFRESH AGAIN",
     };
@@ -76,14 +91,25 @@
 
   async function continuousPoll() {
     let response = await getAnalysis();
-    console.log("This is continuous poll", response);
+    if ("statusCode" in response) {
+      currentError = new customError(
+        response.errorType || ErrorType.UNKNOWN,
+        response.statusCode,
+        response.message,
+      );
+    }
     updateSamples(response);
     setTimeout(continuousPoll, INTERVAL);
   }
 
   async function clearData() {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (!tab?.id) return { statusCode: 404, message: "Tab ID error" };
+    if (!tab?.id)
+      return {
+        type: ErrorType.TAB_ID,
+        statusCode: 404,
+        message: "Tab ID error",
+      };
 
     const key = `dataSample_${tab.id}`;
     const result = await chrome.storage.local.get(key);

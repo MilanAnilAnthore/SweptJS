@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         handleAnalysis(tabId).then((result) => {
             sendResponse(result)
         }).catch((err) => {
-            sendResponse({ statusCode: 500, message: "Internal error", err });
+            sendResponse({ errorType: ErrorType.MESSAGING, statusCode: 500, message: "Internal error", err });
         })
         return true
     }
@@ -47,8 +47,9 @@ async function handleAnalysis(tabId: number): Promise<AnalyzedMessage | ChromeEr
     if (storageData) {
         if (storageData.length < 15) {
             return {
+                errorType: ErrorType.INSUFFICIENT_DATA,
                 statusCode: 202,
-                message: "Collecting Data"
+                message: "Collecting Data...."
             }
         }
         return {
@@ -60,7 +61,8 @@ async function handleAnalysis(tabId: number): Promise<AnalyzedMessage | ChromeEr
         }
     }
     return {
+        errorType: ErrorType.INSUFFICIENT_DATA,
         statusCode: 404,
-        message: "No data found in the storage"
+        message: "Data Not Found - Refresh Tab"
     }
 }

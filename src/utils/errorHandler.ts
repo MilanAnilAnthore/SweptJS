@@ -3,12 +3,12 @@ import { ErrorType } from "../types";
 
 
 export class customError extends Error implements ChromeError {
-    type: ErrorType;
+    errorType: ErrorType;
     statusCode: number;
 
     constructor(type: ErrorType, statusCode: number, message: string) {
         super(message);
-        this.type = type;
+        this.errorType = type;
         this.statusCode = statusCode;
 
 

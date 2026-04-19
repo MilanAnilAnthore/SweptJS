@@ -8,7 +8,7 @@
 {#if currentError}
     <div class="error-container">
         <strong class="error-title"
-            >[{currentError.type}] Error {currentError.statusCode}</strong
+            >[{currentError.errorType}] Error {currentError.statusCode}</strong
         >
         <p class="error-message">
             {currentError.message}
