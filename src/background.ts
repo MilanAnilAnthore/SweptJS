@@ -8,7 +8,6 @@ chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "MEMORY_UPDATE") {
-        console.log("Logging")
         // Just a type guard the content script always come from a tab
         if (!sender.tab?.id) return;
         const tabId = sender.tab.id;
@@ -16,7 +15,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.log("MEMORY UPDATE ERROR:", err)
         });
     } else if (message.type === "GET_ANALYSIS") {
-        console.log("Getting analysis")
         const tabId = message.tabId
         handleAnalysis(tabId).then((result) => {
             sendResponse(result)

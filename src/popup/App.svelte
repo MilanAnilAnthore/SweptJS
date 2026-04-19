@@ -133,6 +133,8 @@
         await chrome.storage.local.remove(key);
         heapSamples = [];
         timeSamples = [];
+        growthPercentage = 0;
+        currentAlive = 0;
         currentError = {
           statusCode: 200,
           message: "Data successfully cleared",
