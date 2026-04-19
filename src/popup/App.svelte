@@ -5,9 +5,19 @@
   const MAX_ATTEMPT = 20;
   const INTERVAL = 4000;
 
+  let heapSamples = $state<number[]>([]);
+  let timeSamples = $state<string[]>([]);
+
   onMount(() => {
     finalAnalysisResult();
   });
+
+  function updateSamples(data: AnalyzedMessage | ChromeError) {
+    if ("samples" in data) {
+      heapSamples = data.samples.arrayHeap;
+      timeSamples = data.samples.arrayTime;
+    }
+  }
 
   async function finalAnalysisResult() {
     const analyzedData = await initialAnalysisPoll();
@@ -17,6 +27,7 @@
     } else {
       console.log("Initial poll finished");
       console.log(analyzedData);
+      updateSamples(analyzedData);
     }
     continuousPoll();
   }
@@ -54,10 +65,11 @@
   async function continuousPoll() {
     let response = await getAnalysis();
     console.log("This is continuous poll", response);
+    updateSamples(response);
     setTimeout(continuousPoll, 4000);
   }
 
   import HeapGraph from "./components/heapGraph.svelte";
 </script>
 
-<HeapGraph />
+<HeapGraph {heapSamples} {timeSamples} />

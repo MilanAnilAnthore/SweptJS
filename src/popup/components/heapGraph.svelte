@@ -9,8 +9,6 @@
         LinearScale,
     } from "chart.js";
 
-    let chart: Chart | undefined;
-
     Chart.register(
         LineController,
         LineElement,
@@ -19,17 +17,19 @@
         LinearScale,
     );
 
+    let { heapSamples, timeSamples } = $props();
+
     onMount(() => {
-        chart = new Chart(
+        let chart = new Chart(
             document.getElementById("acquisitions") as HTMLCanvasElement,
             {
                 type: "line",
                 data: {
-                    labels: [],
+                    labels: timeSamples,
                     datasets: [
                         {
                             label: "Used JS Heap (MB)",
-                            data: [],
+                            data: heapSamples,
                             borderColor: "rgb(75, 192, 192)",
                             tension: 0.1,
                         },
