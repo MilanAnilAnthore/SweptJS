@@ -4,7 +4,7 @@ let alive = 0;
 
 // When GC runs the finalization registry tracks the collection of held value
 const registry = new FinalizationRegistry((heldValue) => {
-    console.log(`GC COLLECTED: ${heldValue}`);
+    // console.log(`GC COLLECTED: ${heldValue}`);
     collected++
     alive--
 });
@@ -18,7 +18,7 @@ const observer = new MutationObserver((mutations) => {
                 registry.register(node, detail);
                 detached++
                 alive++
-                console.log(`${detail} is being tracked, TotalDetached = ${detached}`);
+                // console.log(`${detail} is being tracked, TotalDetached = ${detached}`);
             }
         })
     }

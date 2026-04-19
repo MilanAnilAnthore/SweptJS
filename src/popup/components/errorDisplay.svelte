@@ -1,7 +1,7 @@
 <script lang="ts">
-    import type { customError } from "../../utils/errorHandler";
+    import type { ChromeError } from "../../types";
 
-    let { currentError = null }: { currentError: customError | null } =
+    let { currentError = null }: { currentError: ChromeError | null } =
         $props();
 </script>
 

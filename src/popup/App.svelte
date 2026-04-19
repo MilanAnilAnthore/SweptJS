@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { ErrorType, type AnalyzedMessage, type ChromeError } from "../types";
-  import { customError } from "../utils/errorHandler";
 
   const MAX_ATTEMPT = 20;
   const INTERVAL = 4000;
@@ -13,7 +12,7 @@
   let growthPercentage = $state<number>(0);
   let currentAlive = $state<number>(0);
 
-  let currentError = $state<customError | null>(null);
+  let currentError = $state<ChromeError | null>(null);
   onMount(() => {
     finalAnalysisResult();
   });
@@ -36,11 +35,7 @@
     const analyzedData = await initialAnalysisPoll();
 
     if ("statusCode" in analyzedData) {
-      currentError = new customError(
-        analyzedData.errorType || ErrorType.UNKNOWN,
-        analyzedData.statusCode,
-        analyzedData.message,
-      );
+      currentError = analyzedData;
     } else {
       updateSamples(analyzedData);
     }
@@ -48,19 +43,39 @@
   }
 
   async function getAnalysis(): Promise<AnalyzedMessage | ChromeError> {
-    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (!tab?.id)
-      return {
-        errorType: ErrorType.TAB_ID,
-        statusCode: 404,
-        message: "Tab ID ERROR",
-      };
+    try {
+      let [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      if (!tab?.id) {
+        return {
+          errorType: ErrorType.TAB_ID,
+          statusCode: 404,
+          message: "Tab ID ERROR",
+        };
+      }
 
-    let response = await chrome.runtime.sendMessage({
-      type: "GET_ANALYSIS",
-      tabId: tab.id,
-    });
-    return response;
+      let response = await chrome.runtime.sendMessage({
+        type: "GET_ANALYSIS",
+        tabId: tab.id,
+      });
+
+      if (!response) {
+        return {
+          errorType: ErrorType.MESSAGING,
+          statusCode: 500,
+          message: "No response from background script",
+        };
+      }
+      return response;
+    } catch (e: any) {
+      return {
+        errorType: ErrorType.MESSAGING,
+        statusCode: 500,
+        message: e?.message || "Failed to communicate with extension",
+      };
+    }
   }
 
   async function initialAnalysisPoll(): Promise<AnalyzedMessage | ChromeError> {
@@ -71,11 +86,7 @@
         if (response.statusCode === 404 || response.statusCode === 500)
           return response;
         if (response.statusCode === 202) {
-          currentError = new customError(
-            response.errorType || ErrorType.UNKNOWN,
-            response.statusCode,
-            response.message,
-          );
+          currentError = response;
         }
       } else {
         return response;
@@ -92,35 +103,49 @@
   async function continuousPoll() {
     let response = await getAnalysis();
     if ("statusCode" in response) {
-      currentError = new customError(
-        response.errorType || ErrorType.UNKNOWN,
-        response.statusCode,
-        response.message,
-      );
+      currentError = response;
+    } else {
+      currentError = null;
+      updateSamples(response);
     }
-    updateSamples(response);
     setTimeout(continuousPoll, INTERVAL);
   }
 
   async function clearData() {
-    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (!tab?.id)
-      return {
-        type: ErrorType.TAB_ID,
-        statusCode: 404,
-        message: "Tab ID error",
+    try {
+      let [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      if (!tab?.id) {
+        currentError = {
+          errorType: ErrorType.TAB_ID,
+          statusCode: 404,
+          message: "Tab ID error",
+        };
+        return;
+      }
+
+      const key = `dataSample_${tab.id}`;
+      const result = await chrome.storage.local.get(key);
+
+      console.log(result);
+
+      if (result[key]) {
+        await chrome.storage.local.remove(key);
+        currentError = {
+          statusCode: 200,
+          message: "Data successfully cleared",
+        };
+      } else {
+        currentError = { statusCode: 404, message: "Data not found" };
+      }
+    } catch (e: any) {
+      currentError = {
+        errorType: ErrorType.STORAGE,
+        statusCode: 500,
+        message: e?.message || "Failed to access local storage",
       };
-
-    const key = `dataSample_${tab.id}`;
-    const result = await chrome.storage.local.get(key);
-
-    console.log(result);
-
-    if (result[key]) {
-      await chrome.storage.local.remove(key);
-      return { statusCode: 200, message: "Data successfully cleared" };
-    } else {
-      return { statusCode: 404, message: "Data not found" };
     }
   }
 
