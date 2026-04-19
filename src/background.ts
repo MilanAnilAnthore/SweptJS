@@ -1,6 +1,6 @@
 import type { MessageType } from './types'
 import { detectLeak } from './leakdetector';
-import type { ChromeError } from './types';
+import { type ChromeError, ErrorType } from './types';
 import type { AnalyzedMessage } from './types';
 
 const storage = "dataSample";

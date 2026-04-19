@@ -30,10 +30,21 @@ export interface AnalyzedMessage {
     }
 }
 
-// This is for chrome errors
+export enum ErrorType {
+    STORAGE = "STORAGE",
+    MESSAGING = "MESSAGING",
+    CONTENT_SCRIPT = "CONTENT_SCRIPT",
+    ANALYSIS = "ANALYSIS",
+    INSUFFICIENT_DATA = "INSUFFICIENT_DATA",
+    TAB_CLOSED = "TAB_CLOSED",
+    TIMEOUT = "TIMEOUT",
+    UNKNOWN = "UNKNOWN"
+}
+
 export interface ChromeError {
     statusCode: number,
-    message: string
+    message: string,
+    errorType?: ErrorType
 }
 
 

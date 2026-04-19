@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { AnalyzedMessage, ChromeError } from "../types";
+  import type { AnalyzedMessage, ChromeError, ErrorType } from "../types";
+  import { customError } from "../utils/errorHandler";
 
   const MAX_ATTEMPT = 20;
   const INTERVAL = 4000;
@@ -12,6 +13,7 @@
   let growthPercentage = $state<number>(0);
   let currentAlive = $state<number>(0);
 
+  let currentError = $state<customError | null>(null);
   onMount(() => {
     finalAnalysisResult();
   });
@@ -34,10 +36,7 @@
     const analyzedData = await initialAnalysisPoll();
 
     if ("statusCode" in analyzedData) {
-      console.log("This is an error", analyzedData.message);
     } else {
-      console.log("Initial poll finished");
-      console.log(analyzedData);
       updateSamples(analyzedData);
     }
     continuousPoll();
@@ -61,7 +60,9 @@
       if ("statusCode" in response) {
         if (response.statusCode === 404 || response.statusCode === 500)
           return response;
-        if (response.statusCode === 202) console.log(response.message);
+        if (response.statusCode === 202) {
+          console.log("///");
+        }
       } else {
         return response;
       }
@@ -100,6 +101,7 @@
   import HeapGraph from "./components/heapGraph.svelte";
   import MemoryMetrics from "./components/MemoryMetrics.svelte";
   import MemoryStatus from "./components/MemoryStatus.svelte";
+  import ErrorDisplay from "./components/errorDisplay.svelte";
 </script>
 
 <main class="cyber-container">
@@ -112,6 +114,7 @@
     </div>
   </header>
 
+  <ErrorDisplay {currentError} />
   <MemoryStatus {heapthresholdExceeded} {domthresholdExceeded} />
   <MemoryMetrics {growthPercentage} {currentAlive} {heapthresholdExceeded} />
   <HeapGraph {heapSamples} {timeSamples} />

@@ -1,11 +1,6 @@
 import type { ChromeError } from "../types";
+import { ErrorType } from "../types";
 
-
-export enum ErrorType {
-    AUTHORIZATION = "AUTHORIZATION",
-    NETWORK = "NETWORK",
-    UNKNOWN = "UNKNOWN"
-}
 
 export class customError extends Error implements ChromeError {
     type: ErrorType;
