@@ -25,7 +25,9 @@ setInterval(() => {
                 // console.log("runtime error:", chrome.runtime.lastError)
             }
         });
-    } catch (e) { }
+    } catch (e) {
+        // Silenced: expected when side panel is closed and no listener is registered
+    }
 
 
     lastSentHeap = latestHeap;

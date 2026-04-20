@@ -1,6 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { ErrorType, type AnalyzedMessage, type ChromeError } from "../types";
+  import HeapGraph from "./components/HeapGraph.svelte";
+  import MemoryMetrics from "./components/MemoryMetrics.svelte";
+  import MemoryStatus from "./components/MemoryStatus.svelte";
+  import ErrorDisplay from "./components/ErrorDisplay.svelte";
 
   const MAX_ATTEMPT = 20;
   const INTERVAL = 4000;
@@ -135,6 +139,8 @@
         timeSamples = [];
         growthPercentage = 0;
         currentAlive = 0;
+        domthresholdExceeded = false;
+        heapthresholdExceeded = false;
         currentError = {
           statusCode: 200,
           message: "Data successfully cleared",
@@ -150,11 +156,6 @@
       };
     }
   }
-
-  import HeapGraph from "./components/heapGraph.svelte";
-  import MemoryMetrics from "./components/MemoryMetrics.svelte";
-  import MemoryStatus from "./components/MemoryStatus.svelte";
-  import ErrorDisplay from "./components/errorDisplay.svelte";
 </script>
 
 <main class="cyber-container">

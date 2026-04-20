@@ -24,8 +24,8 @@
 
     let chart: Chart;
 
-    try {
-        onMount(() => {
+    onMount(() => {
+        try {
             chart = new Chart(
                 document.getElementById("acquisitions") as HTMLCanvasElement,
                 {
@@ -87,10 +87,10 @@
                     },
                 },
             );
-        });
-    } catch (err) {
-        console.log(err);
-    }
+        } catch (err) {
+            console.log(err);
+        }
+    });
 
     $effect(() => {
         if (chart) {
@@ -101,7 +101,6 @@
             chart.update();
         }
     });
-
 </script>
 
 <div

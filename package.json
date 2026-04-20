@@ -1,7 +1,7 @@
 {
   "name": "sweptjs",
   "version": "1.0.0",
-  "description": "",
+  "description": "Chrome extension that detects JavaScript memory leaks and DOM node accumulation in real time",
   "scripts": {
     "dev": "vite build --watch --mode development",
     "build": "vite build",
@@ -11,8 +11,13 @@
     "type": "git",
     "url": "git+https://github.com/MilanAnilAnthore/SweptJS.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "chrome-extension",
+    "memory-leak",
+    "devtools",
+    "svelte"
+  ],
+  "author": "Milan Anil Anthore",
   "license": "ISC",
   "type": "module",
   "bugs": {
