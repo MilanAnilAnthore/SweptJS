@@ -103,9 +103,17 @@
     });
 </script>
 
-<div
-    class="cyber-card"
-    style="width: 100%; height: 300px; padding: 20px 10px 10px 10px;"
->
-    <canvas id="acquisitions"></canvas>
+<div class="cyber-card terminal" style="width: 100%; height: 300px;">
+    <div class="terminal-header">
+        <div class="dot g"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <span
+            style="margin-left: 8px; font-size: 0.75rem; letter-spacing: 0.1em; opacity: 0.6;"
+            >HEAP_TIMELINE</span
+        >
+    </div>
+    <div style="padding: 0 10px 10px 10px; height: calc(100% - 49px);">
+        <canvas id="acquisitions"></canvas>
+    </div>
 </div>
