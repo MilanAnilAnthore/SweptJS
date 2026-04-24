@@ -4,7 +4,10 @@ import { type ChromeError, ErrorType } from './types';
 import type { AnalyzedMessage } from './types';
 
 const storage = "dataSample";
-chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
+// Feature detection: sidePanel API is Chrome-only, not available in Opera GX
+if (chrome.sidePanel?.setPanelBehavior) {
+    chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
+}
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "MEMORY_UPDATE") {

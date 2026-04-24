@@ -25,6 +25,7 @@
         }
     ],
     "action": {
+        "default_popup": "src/popup/popup.html",
         "default_icon": {
             "16": "resources/logo.png",
             "48": "resources/logo.png",
